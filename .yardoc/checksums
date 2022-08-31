@@ -1,0 +1,3 @@
+lib/name_gender_classifier.rb 042cbdc06802dbe23aeb2e7542c96a3667f1a3e6
+lib/name_gender_classifier/database_manager.rb 0c53b809a8e43558113f19488330ae0e7c2cb610
+lib/name_gender_classifier/fallback_gender_detector.rb 40bf82327541ee3a9b7265f93f46987f37e9adc2

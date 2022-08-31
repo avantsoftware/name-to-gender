@@ -1,14 +1,18 @@
 require 'iconv'
 
+# Gender detector for first names.
 module NameGenderClassifier
-  # Return the gender(s) (probabilistically) for the informed name(s).
+  # Return the gender(s) (probabilistically) for the informed name(s). If arg is [String, Symbol],
+  # then the gender [String] is returned. If arg is [Array<String>, Array<Symbol>], then an array
+  # [Array<String>] with the genders is returned. If arg is [Array<Object>], then an array with the
+  # same objects [Array<Object>] and the newly assigned gender is returned.
   #
-  # @param [String, Symbol, Array<String>, Array<Symbol>, Array<Object>] arg Argument holding the first
-  #                       name(s) information(s).
-  # @paran [Hash] options first_name_attribute: name of the method that returns the first name
+  # @param arg [String, Symbol, Array<String>, Array<Symbol>, Array<Object>] argument holding first
+  #   name(s) information(s).
+  # @paran options [Hash] first_name_attribute: name of the method that returns the first name,
   #                       gender_attribute: name of the method which will receive the gender assignment.
   #
-  # @return [String, Array<String>, Array<Object>]
+  # @return [String, Array<String>, Array<Object>] the gender classification for the passed first names
   def self.classify(arg, options = {})
     case arg
     when String, Symbol
@@ -24,9 +28,9 @@ module NameGenderClassifier
 
   # Return the genders (probabilistically) for the informed names.
   #
-  # @param [Array<String>, Array<Symbol>] array Array holding first names.
+  # @param array [Array<String>, Array<Symbol>] see {NameGenderClassifier.classify}
   #
-  # @return [Array<String>]
+  # @return [Array<String>] see {NameGenderClassifier.classify}
   def self.classify_array(array)
     result = []
     DatabaseManager.gdbm do |db|
@@ -43,11 +47,10 @@ module NameGenderClassifier
   # For each object in the array, it tries to classify the gender for object.first_name or
   # object.name (or equivalent method) and save it on object.gender (or equivalent method).
   #
-  # @param [Array<Object>] objects Array of objects holding first names.
-  # @paran [Hash] options first_name_attribute: name of the method that returns the first name
-  #                       gender_attribute: name of the method which will receive the gender assignment.
+  # @param objects [Array<Object>] see {NameGenderClassifier.classify}
+  # @param options see {NameGenderClassifier.classify}
   #
-  # @return [Array<Object>]
+  # @return [Array<Object>] the objects with the assigned genders
   def self.classify_objects(objects, options = {})
     gender_attribute = options.fetch(:gender_attribute, 'gender')
     first_name_attribute = options.fetch(:first_name_attribute, nil)
@@ -76,12 +79,13 @@ module NameGenderClassifier
     objects
   end
 
-  # Remove whitespaces, secondary names, accents, digits and transform to lower case.
+  # Remove whitespaces, secondary names, accents, digits and transform to string and lower case.
   def self.remove_unwanted_chars(name)
     Iconv.iconv('ascii//translit//ignore', 'utf-8', name.to_s.strip.split(' ')[0].downcase)[0].gsub(/\W+/, '')
   end
   private_class_method :remove_unwanted_chars
 
+  # @return [String, nil] the gender of the informed name
   def self.most_probable_gender(name, db = nil)
     name = remove_unwanted_chars(name)
 
