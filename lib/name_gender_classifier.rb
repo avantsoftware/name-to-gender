@@ -2,10 +2,12 @@ require 'iconv'
 
 # Gender detector for first names.
 module NameGenderClassifier
-  # Return the gender(s) (probabilistically) for the informed name(s). If arg is [String, Symbol],
-  # then the gender [String] is returned. If arg is [Array<String>, Array<Symbol>], then an array
-  # [Array<String>] with the genders is returned. If arg is [Array<Object>], then an array with the
-  # same objects [Array<Object>] and the newly assigned gender is returned.
+  # Return the gender(s) (probabilistically) for the informed name(s). The result type will vary depending
+  # on the parameter type:
+  #
+  # [String, Symbol] the gender (String) is returned.
+  # [Array<String>] an array (Array<String>) with the genders is returned.
+  # [Array<Object>] an array (Array<Object>) with the same objects and the newly assigned genders is returned.
   #
   # @param arg [String, Symbol, Array<String>, Array<Symbol>, Array<Object>] argument holding first
   #   name(s) information(s).
