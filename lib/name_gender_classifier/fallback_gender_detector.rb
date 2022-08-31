@@ -10,8 +10,8 @@ module NameGenderClassifier
                                nis nge ris riz sse].freeze
 
     def self.guess_gender(name)
-      return :female if const_get("#{LOCALE}_FEMALE_SUFFIXES").any? { |t| name.end_with?(t) }
-      return :male if const_get("#{LOCALE}_MALE_SUFFIXES").any? { |t| name.end_with?(t) }
+      return 'female' if const_get("#{LOCALE}_FEMALE_SUFFIXES").any? { |t| name.end_with?(t) }
+      return 'male' if const_get("#{LOCALE}_MALE_SUFFIXES").any? { |t| name.end_with?(t) }
     end
   end
 end

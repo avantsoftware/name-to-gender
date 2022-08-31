@@ -7,7 +7,7 @@ module NameGenderClassifier
   # @paran [Hash] options first_name_attribute: name of the method that returns the first name
   #                       gender_attribute: name of the method which will receive the gender assignment.
   #
-  # @return [Symbol, Array<Symbol>, Array<Object>]
+  # @return [String, Array<String>, Array<Object>]
   def self.classify(arg, options = {})
     case arg
     when String
@@ -25,7 +25,7 @@ module NameGenderClassifier
   #
   # @param [Array<String>] array Array holding first names.
   #
-  # @return [Array<Symbol>]
+  # @return [Array<String>]
   def self.classify_array(array)
     result = []
     DatabaseManager.gdbm do |db|
@@ -77,7 +77,7 @@ module NameGenderClassifier
 
   # Remove whitespaces, secondary names, accents, digits and transform to lower case.
   def self.remove_unwanted_chars(name)
-    Iconv.iconv('ascii//translit//ignore', 'utf-8', name.strip.split(' ')[0].downcase)[0].gsub(/\W+/, '')
+    Iconv.iconv('ascii//translit//ignore', 'utf-8', name.to_s.strip.split(' ')[0].downcase)[0].gsub(/\W+/, '')
   end
   private_class_method :remove_unwanted_chars
 
@@ -85,7 +85,7 @@ module NameGenderClassifier
     name = remove_unwanted_chars(name)
 
     if fem_probability = db ? db[name]&.to_f : DatabaseManager.find(name)
-      fem_probability >= 0.5 ? :female : :male
+      fem_probability >= 0.5 ? 'female' : 'male'
     else
       FallbackGenderDetector.guess_gender(name)
     end
