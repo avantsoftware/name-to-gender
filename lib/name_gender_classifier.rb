@@ -84,7 +84,7 @@ module NameGenderClassifier
   def self.most_probable_gender(name, db = nil)
     name = remove_unwanted_chars(name)
 
-    if fem_probability = db && db[name] && db[name].to_f || DatabaseManager.find(name)
+    if fem_probability = db ? db[name]&.to_f : DatabaseManager.find(name)
       fem_probability >= 0.5 ? :female : :male
     else
       FallbackGenderDetector.guess_gender(name)

@@ -4,7 +4,8 @@ require 'gdbm'
 
 module NameGenderClassifier
   module DatabaseManager
-    DB_NAME = 'lib/name_gender_classifier/classified_names_pt-br.db'
+    DB_NAME = "#{Gem.loaded_specs['name_gender_classifier'].gem_dir}/lib/"\
+              'name_gender_classifier/classified_names_pt-br.db'
 
     def self.find(key)
       value = gdbm[key.to_s]
