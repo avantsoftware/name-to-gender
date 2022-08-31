@@ -3,17 +3,18 @@ require 'iconv'
 module NameGenderClassifier
   # Return the gender(s) (probabilistically) for the informed name(s).
   #
-  # @param [String, Array<String>, Array<Object>] arg Argument holding the first name(s) information(s).
+  # @param [String, Symbol, Array<String>, Array<Symbol>, Array<Object>] arg Argument holding the first
+  #                       name(s) information(s).
   # @paran [Hash] options first_name_attribute: name of the method that returns the first name
   #                       gender_attribute: name of the method which will receive the gender assignment.
   #
   # @return [String, Array<String>, Array<Object>]
   def self.classify(arg, options = {})
     case arg
-    when String
+    when String, Symbol
       most_probable_gender(arg)
     when Array
-      if arg[0].is_a?(String)
+      if arg[0].is_a?(String) || arg[0].is_a?(Symbol)
         classify_array(arg)
       else
         classify_objects(arg, options)
@@ -23,7 +24,7 @@ module NameGenderClassifier
 
   # Return the genders (probabilistically) for the informed names.
   #
-  # @param [Array<String>] array Array holding first names.
+  # @param [Array<String>, Array<Symbol>] array Array holding first names.
   #
   # @return [Array<String>]
   def self.classify_array(array)
