@@ -83,13 +83,17 @@ module NameGenderClassifier
 
   # Remove whitespaces, secondary names, accents, digits and transform to string and lower case.
   def self.remove_unwanted_chars(name)
-    Iconv.iconv('ascii//translit//ignore', 'utf-8', name.to_s.strip.split(' ')[0].downcase)[0].gsub(/\W+/, '')
+    # Enforce the string format, remove white spaces and discard secondary names
+    return unless name = name.to_s.strip.split(' ')[0]
+
+    # Transform to lower case, transliterate and remove non letter characters
+    Iconv.iconv('ascii//translit//ignore', 'utf-8', name.downcase)[0].gsub(/\W+/, '')
   end
   private_class_method :remove_unwanted_chars
 
   # @return [String, nil] the gender of the informed name
   def self.most_probable_gender(name, db = nil)
-    name = remove_unwanted_chars(name)
+    return unless name = remove_unwanted_chars(name)
 
     if fem_probability = db ? db[name]&.to_f : DatabaseManager.find(name)
       fem_probability >= 0.5 ? 'female' : 'male'
