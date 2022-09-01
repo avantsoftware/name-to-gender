@@ -1,0 +1,4 @@
+name_gender_classifier-*.gem
+
+.yardoc
+doc/
