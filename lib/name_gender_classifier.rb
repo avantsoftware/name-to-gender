@@ -2,7 +2,7 @@ require 'iconv'
 
 # Gender detector for first names.
 module NameGenderClassifier
-  # Return the gender(s) (probabilistically) for the informed name(s). The result type will vary depending
+  # Return the gender(s) (probability) for the informed name(s). The result type will vary depending
   # on the parameter type:
   #
   # [String, Symbol] the gender (String) is returned.
@@ -11,7 +11,7 @@ module NameGenderClassifier
   #
   # @param arg [String, Symbol, Array<String>, Array<Symbol>, Array<Object>] argument holding first
   #   name(s) information(s).
-  # @paran options [Hash] first_name_attribute: name of the method that returns the first name,
+  # @param options [Hash] first_name_attribute: name of the method that returns the first name,
   #                       gender_attribute: name of the method which will receive the gender assignment.
   #
   # @return [String, Array<String>, Array<Object>] the gender classification for the passed first names
@@ -20,6 +20,7 @@ module NameGenderClassifier
     when String, Symbol
       most_probable_gender(arg)
     when Array
+      # Assumes that all elements within the array are of the same type as the first.
       if arg[0].is_a?(String) || arg[0].is_a?(Symbol)
         classify_array(arg)
       else
@@ -54,21 +55,20 @@ module NameGenderClassifier
   #
   # @return [Array<Object>] the objects with the assigned genders
   def self.classify_objects(objects, options = {})
-    gender_attribute = options.fetch(:gender_attribute, 'gender')
-    first_name_attribute = options.fetch(:first_name_attribute, nil)
-    gender_attribute_assignment = "#{gender_attribute}="
+    first_name_attribute = options.fetch(:first_name_attribute, nil) ||
+                           (:first_name if defined?(objects[0].first_name)) ||
+                           (:name if defined?(objects[0].name))
+
     if first_name_attribute.nil?
-      first_name_attribute = :first_name if defined?(objects[0].first_name)
-      first_name_attribute = :name if defined?(objects[0].name)
+      puts 'The object doesn\'t have the methods \'name\' nor \'first_name\'. '\
+          'Use #classify(arg, first_name_attribute: nil, gender_attribute: nil) '\
+          'to inform which methods to lookup.'
 
-      if first_name_attribute.nil?
-        puts 'The object doesn\'t have the methods \'name\' nor \'first_name\'. '\
-            'Use #classify(arg, first_name_attribute: nil, gender_attribute: nil) '\
-            'to inform which methods to lookup.'
-
-        return objects
-      end
+      return objects
     end
+
+    gender_attribute = options.fetch(:gender_attribute, 'gender')
+    gender_attribute_assignment = "#{gender_attribute}="
 
     DatabaseManager.gdbm do |db|
       objects.each do |object|
