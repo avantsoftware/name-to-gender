@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = 'name_gender_classifier'
-  s.version     = '0.0.1'
+  s.version     = '0.0.2'
   s.summary     = 'Gender detection for brazilian first names.'
   s.description = 'Using primarily IBGE census data [2010], this gem classifies brazilian first '\
                   'names as \'male\' or \'female\'.'

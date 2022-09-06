@@ -16,10 +16,9 @@ module NameGenderClassifier
   #
   # @return [String, Array<String>, Array<Object>] the gender classification for the passed first names
   def self.classify(arg, options = {})
-    case arg
-    when String, Symbol
+    if arg.is_a?(String) || arg.is_a?(Symbol)
       most_probable_gender(arg)
-    when Array
+    elsif arg.respond_to?(:[]) && arg.respond_to?(:each)
       # Assumes that all elements within the array are of the same type as the first.
       if arg[0].is_a?(String) || arg[0].is_a?(Symbol)
         classify_array(arg)
