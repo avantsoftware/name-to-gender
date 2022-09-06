@@ -37,7 +37,7 @@ module NameGenderClassifier
     result = []
     DatabaseManager.gdbm do |db|
       array.each do |name|
-        next unless name
+        result << nil && next unless name
 
         result << most_probable_gender(name, db)
       end
